@@ -2902,6 +2902,49 @@ static ssize_t usb_compliance_mode_store(struct device *dev,
 }
 static DEVICE_ATTR_RW(usb_compliance_mode);
 
+#ifdef CONFIG_LGE_USB
+static char * dwc3_revision(struct dwc3 *dwc)
+{
+	switch (dwc->revision) {
+	case DWC3_REVISION_173A: return "DWC3_REVISION_173A";
+	case DWC3_REVISION_175A: return "DWC3_REVISION_175A";
+	case DWC3_REVISION_180A: return "DWC3_REVISION_180A";
+	case DWC3_REVISION_183A: return "DWC3_REVISION_183A";
+	case DWC3_REVISION_185A: return "DWC3_REVISION_185A";
+	case DWC3_REVISION_187A: return "DWC3_REVISION_187A";
+	case DWC3_REVISION_188A: return "DWC3_REVISION_188A";
+	case DWC3_REVISION_190A: return "DWC3_REVISION_190A";
+	case DWC3_REVISION_194A: return "DWC3_REVISION_194A";
+	case DWC3_REVISION_200A: return "DWC3_REVISION_200A";
+	case DWC3_REVISION_202A: return "DWC3_REVISION_202A";
+	case DWC3_REVISION_210A: return "DWC3_REVISION_210A";
+	case DWC3_REVISION_220A: return "DWC3_REVISION_220A";
+	case DWC3_REVISION_230A: return "DWC3_REVISION_230A";
+	case DWC3_REVISION_240A: return "DWC3_REVISION_240A";
+	case DWC3_REVISION_250A: return "DWC3_REVISION_250A";
+	case DWC3_REVISION_260A: return "DWC3_REVISION_260A";
+	case DWC3_REVISION_270A: return "DWC3_REVISION_270A";
+	case DWC3_REVISION_280A: return "DWC3_REVISION_280A";
+	case DWC3_REVISION_290A: return "DWC3_REVISION_290A";
+	case DWC3_REVISION_300A: return "DWC3_REVISION_300A";
+	case DWC3_REVISION_310A: return "DWC3_REVISION_310A";
+	case DWC3_REVISION_320A: return "DWC3_REVISION_320A";
+	default: return "Unknown";
+	}
+}
+
+static ssize_t usb_controller_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct dwc3_msm *mdwc = dev_get_drvdata(dev);
+	struct dwc3 *dwc = platform_get_drvdata(mdwc->dwc3);
+
+	return snprintf(buf, PAGE_SIZE, "%s\n",
+			dwc3_revision(dwc));
+}
+static DEVICE_ATTR_RO(usb_controller);
+#endif
+
 static int dwc3_msm_probe(struct platform_device *pdev)
 {
 	struct device_node *node = pdev->dev.of_node, *dwc3_node;
@@ -3256,6 +3299,9 @@ static int dwc3_msm_probe(struct platform_device *pdev)
 	device_create_file(&pdev->dev, &dev_attr_speed);
 	device_create_file(&pdev->dev, &dev_attr_xhci_link_compliance);
 	device_create_file(&pdev->dev, &dev_attr_usb_compliance_mode);
+#ifdef CONFIG_LGE_USB
+	device_create_file(&pdev->dev, &dev_attr_usb_controller);
+#endif
 
 	host_mode = usb_get_dr_mode(&mdwc->dwc3->dev) == USB_DR_MODE_HOST;
 	if (host_mode ||
@@ -3291,6 +3337,9 @@ static int dwc3_msm_remove(struct platform_device *pdev)
 
 	device_remove_file(&pdev->dev, &dev_attr_mode);
 	device_remove_file(&pdev->dev, &dev_attr_xhci_link_compliance);
+#ifdef CONFIG_LGE_USB
+	device_remove_file(&pdev->dev, &dev_attr_usb_controller);
+#endif
 
 	if (cpu_to_affin)
 		unregister_cpu_notifier(&mdwc->dwc3_cpu_notifier);
@@ -3760,6 +3809,15 @@ static int dwc3_msm_gadget_vbus_draw(struct dwc3_msm *mdwc, unsigned mA)
 {
 	union power_supply_propval pval = {0};
 	int ret, psy_type;
+
+	if (mdwc->max_power == mA)
+		return 0;
+
+#ifdef CONFIG_LGE_PM
+	power_supply_get_property(mdwc->usb_psy, POWER_SUPPLY_PROP_PRESENT, &pval);
+	if (!pval.intval)
+		return 0;
+#endif
 
 	psy_type = get_psy_type(mdwc);
 	if (psy_type == POWER_SUPPLY_TYPE_USB_FLOAT) {

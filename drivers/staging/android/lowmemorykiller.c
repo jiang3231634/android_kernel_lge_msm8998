@@ -49,6 +49,7 @@
 #include <linux/cpuset.h>
 #include <linux/vmpressure.h>
 #include <linux/zcache.h>
+#include <linux/sched/rt.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/almk.h>
@@ -61,6 +62,23 @@
 
 #define CREATE_TRACE_POINTS
 #include "trace/lowmemorykiller.h"
+
+#ifdef CONFIG_BOOST_DYING_TASK
+/*
+ * It's reasonable to grant the dying task an even higher priority to
+ * be sure it will be scheduled sooner and free the desired pmem.
+ * It was suggested using SCHED_RR:1 (the lowest RT priority),
+ * so that this task won't interfere with any running RT task.
+ */
+static void boost_dying_task_prio(struct task_struct *p)
+{
+	if (!rt_task(p)) {
+		struct sched_param param;
+		param.sched_priority = 1;
+		sched_setscheduler_nocheck(p, SCHED_RR, &param);
+	}
+}
+#endif
 
 static uint32_t lowmem_debug_level = 1;
 static short lowmem_adj[6] = {
@@ -77,7 +95,9 @@ static int lowmem_minfree[6] = {
 	16 * 1024,	/* 64MB */
 };
 static int lowmem_minfree_size = 4;
-static int lmk_fast_run = 1;
+static int lmk_fast_run = 0;
+
+static int lmk_kill_cnt = 0;
 
 static unsigned long lowmem_deathpending_timeout;
 
@@ -239,23 +259,12 @@ int can_use_cma_pages(gfp_t gfp_mask)
 {
 	int can_use = 0;
 	int mtype = gfpflags_to_migratetype(gfp_mask);
-	int i = 0;
-	int *mtype_fallbacks = get_migratetype_fallbacks(mtype);
 
 	if (is_migrate_cma(mtype)) {
 		can_use = 1;
 	} else {
-		for (i = 0;; i++) {
-			int fallbacktype = mtype_fallbacks[i];
-
-			if (is_migrate_cma(fallbacktype)) {
-				can_use = 1;
-				break;
-			}
-
-			if (fallbacktype == MIGRATE_TYPES)
-				break;
-		}
+		if (mtype == MIGRATE_MOVABLE)
+			can_use = 1;
 	}
 	return can_use;
 }
@@ -425,6 +434,10 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 
 	other_free = global_page_state(NR_FREE_PAGES);
 
+#ifdef CONFIG_MIGRATE_HIGHORDER
+	other_free -= global_page_state(NR_FREE_HIGHORDER_PAGES);
+#endif
+
 	if (global_page_state(NR_SHMEM) + total_swapcache_pages() <
 		global_page_state(NR_FILE_PAGES) + zcache_pages())
 		other_file = global_page_state(NR_FILE_PAGES) + zcache_pages() -
@@ -489,14 +502,20 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 			continue;
 
 		oom_score_adj = p->signal->oom_score_adj;
-		if (oom_score_adj < min_score_adj) {
-			task_unlock(p);
-			continue;
-		}
+			if (oom_score_adj < min_score_adj) {
+				task_unlock(p);
+				continue;
+			}
+
 		tasksize = get_mm_rss(p->mm);
 		task_unlock(p);
 		if (tasksize <= 0)
 			continue;
+		if (p->state & TASK_UNINTERRUPTIBLE) {
+			lowmem_print(3, "%s: [tsk] pid/state : %d/%ld , [p] pid/state : %d/%ld\n",
+					__func__, tsk->pid, tsk->state, p->pid, p->state);
+			continue;
+		}
 		if (selected) {
 			if (oom_score_adj < selected_oom_score_adj)
 				continue;
@@ -524,6 +543,11 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 		}
 
 		task_lock(selected);
+#ifdef CONFIG_BOOST_DYING_TASK
+		//Improve the priority of killed process can accelerate the process to die,
+		//and the process memory would be released quickly
+		boost_dying_task_prio(selected);
+#endif
 		send_sig(SIGKILL, selected, 0);
 		/*
 		 * FIXME: lowmemorykiller shouldn't abuse global OOM killer
@@ -533,11 +557,14 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 		if (selected->mm)
 			mark_oom_victim(selected);
 		task_unlock(selected);
+		++lmk_kill_cnt;
+
 		cache_size = other_file * (long)(PAGE_SIZE / 1024);
 		cache_limit = minfree * (long)(PAGE_SIZE / 1024);
 		free = other_free * (long)(PAGE_SIZE / 1024);
 		trace_lowmemory_kill(selected, cache_size, cache_limit, free);
-		lowmem_print(1, "Killing '%s' (%d) (tgid %d), adj %hd,\n" \
+		lowmem_print(1, "Killing '%s' (%d) (tgid %d), adj %hd,\n"
+
 			        "   to free %ldkB on behalf of '%s' (%d) because\n" \
 			        "   cache %ldkB is below limit %ldkB for oom_score_adj %hd\n" \
 				"   Free memory is %ldkB above reserved.\n" \
@@ -699,3 +726,4 @@ module_param_array_named(minfree, lowmem_minfree, uint, &lowmem_minfree_size,
 module_param_named(debug_level, lowmem_debug_level, uint, S_IRUGO | S_IWUSR);
 module_param_named(lmk_fast_run, lmk_fast_run, int, S_IRUGO | S_IWUSR);
 
+module_param_named(lmk_kill_cnt, lmk_kill_cnt, int, S_IRUGO);
