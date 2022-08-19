@@ -328,7 +328,7 @@ kgsl_mem_entry_destroy(struct kref *kref)
 			    entry->memdesc.sgt->nents, i) {
 			page = sg_page(sg);
 			for (j = 0; j < (sg->length >> PAGE_SHIFT); j++)
-				set_page_dirty(nth_page(page, j));
+				set_page_dirty_lock(nth_page(page, j));
 		}
 	}
 
@@ -533,7 +533,7 @@ int kgsl_context_init(struct kgsl_device_private *dev_priv,
 	struct kgsl_process_private  *proc_priv = dev_priv->process_priv;
 
 	if (atomic_read(&proc_priv->ctxt_count) > KGSL_MAX_CONTEXTS_PER_PROC) {
-		KGSL_DRV_ERR_RATELIMIT(device,
+		KGSL_DRV_ERR(device,
 			"Per process context limit reached for pid %u",
 			dev_priv->process_priv->pid);
 		return -ENOSPC;

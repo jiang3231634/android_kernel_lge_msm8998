@@ -1466,7 +1466,7 @@ static ssize_t
 urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
 {
 	static int maxwarn = 10;
-	int ret = 0;
+	int ret;
 
 	if (unlikely(nonblocking_pool.initialized == 0) &&
 	    maxwarn > 0) {
