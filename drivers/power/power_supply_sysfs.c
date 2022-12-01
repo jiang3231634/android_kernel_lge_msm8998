@@ -317,6 +317,13 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(pd_voltage_min),
 	POWER_SUPPLY_ATTR(sdp_current_max),
 	POWER_SUPPLY_ATTR(fcc_stepper_enable),
+	POWER_SUPPLY_ATTR(ignore_false_negative_isense),
+	POWER_SUPPLY_ATTR(battery_info),
+	POWER_SUPPLY_ATTR(battery_info_id),
+	POWER_SUPPLY_ATTR(enable_jeita_detection),
+	POWER_SUPPLY_ATTR(allow_hvdcp3),
+	POWER_SUPPLY_ATTR(max_pulse_allowed),
+	POWER_SUPPLY_ATTR(fg_reset_clock),
 #ifdef CONFIG_LGE_PM
 	POWER_SUPPLY_ATTR(connector_type),
 	POWER_SUPPLY_ATTR(parallel_batfet_mode),
@@ -327,13 +334,7 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(batt_full_current),
 	POWER_SUPPLY_ATTR(recharge_soc),
 	POWER_SUPPLY_ATTR(toggle_stat),
-	POWER_SUPPLY_ATTR(allow_hvdcp3),
 	POWER_SUPPLY_ATTR(hvdcp_opti_allowed),
-	POWER_SUPPLY_ATTR(max_pulse_allowed),
-	POWER_SUPPLY_ATTR(ignore_false_negative_isense),
-	POWER_SUPPLY_ATTR(battery_info),
-	POWER_SUPPLY_ATTR(battery_info_id),
-	POWER_SUPPLY_ATTR(enable_jeita_detection),
 	POWER_SUPPLY_ATTR(esr_actual),
 	POWER_SUPPLY_ATTR(esr_nominal),
 	POWER_SUPPLY_ATTR(soh),
@@ -435,14 +436,10 @@ int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
 	char *prop_buf;
 	char *attrname;
 
-	dev_dbg(dev, "uevent\n");
-
 	if (!psy || !psy->desc) {
 		dev_dbg(dev, "No power supply yet\n");
 		return ret;
 	}
-
-	dev_dbg(dev, "POWER_SUPPLY_NAME=%s\n", psy->desc->name);
 
 	ret = add_uevent_var(env, "POWER_SUPPLY_NAME=%s", psy->desc->name);
 	if (ret)
@@ -478,8 +475,6 @@ int power_supply_uevent(struct device *dev, struct kobj_uevent_env *env)
 			ret = -ENOMEM;
 			goto out;
 		}
-
-		dev_dbg(dev, "prop %s=%s\n", attrname, prop_buf);
 
 		ret = add_uevent_var(env, "POWER_SUPPLY_%s=%s", attrname, prop_buf);
 		kfree(attrname);

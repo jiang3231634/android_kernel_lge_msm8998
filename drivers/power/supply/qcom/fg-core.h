@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2016-2017, 2020, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -609,12 +609,12 @@ extern int64_t twos_compliment_extend(int64_t val, int s_bit_pos);
 extern s64 fg_float_decode(u16 val);
 extern bool is_input_present(struct fg_chip *chip);
 extern bool is_qnovo_en(struct fg_chip *chip);
-extern void fg_circ_buf_add(struct fg_circ_buf *buf, int val);
-extern void fg_circ_buf_clr(struct fg_circ_buf *buf);
-extern int fg_circ_buf_avg(struct fg_circ_buf *buf, int *avg);
-extern int fg_circ_buf_median(struct fg_circ_buf *buf, int *median);
-extern int fg_lerp(const struct fg_pt *pts, size_t tablesize, s32 input,
-			s32 *output);
-void fg_stay_awake(struct fg_chip *chip, int awake_reason);
-void fg_relax(struct fg_chip *chip, int awake_reason);
+extern void fg_circ_buf_add(struct fg_circ_buf *, int);
+extern void fg_circ_buf_clr(struct fg_circ_buf *);
+extern int fg_circ_buf_avg(struct fg_circ_buf *, int *);
+extern int fg_circ_buf_median(struct fg_circ_buf *, int *);
+extern int fg_lerp(const struct fg_pt *, size_t, s32, s32 *);
+extern void fg_stay_awake(struct fg_chip *, int);
+extern void fg_relax(struct fg_chip *, int);
+extern int fg_dma_mem_req(struct fg_chip *, bool);
 #endif

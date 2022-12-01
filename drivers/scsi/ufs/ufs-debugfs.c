@@ -988,8 +988,8 @@ static int ufsdbg_dump_geo_desc_show(struct seq_file *file, void *data)
 static int ufsdbg_dump_health_desc_show(struct seq_file *file, void *data)
 {
 	int err = 0, i;
-	int buff_len = QUERY_DESC_DEVICE_HEALTH_MAX_SIZE;
-	u8 desc_buf[QUERY_DESC_DEVICE_HEALTH_MAX_SIZE];
+	int buff_len = QUERY_DESC_HEALTH_MAX_SIZE;
+	u8 desc_buf[QUERY_DESC_HEALTH_MAX_SIZE];
 	struct ufs_hba *hba = (struct ufs_hba *)file->private;
 	struct desc_field_offset *tmp;
 

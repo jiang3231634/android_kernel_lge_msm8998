@@ -1,4 +1,4 @@
-/* Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2016-2017, 2020, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -42,9 +42,11 @@
 #define RESTART_GO_BIT				BIT(0)
 
 /* BATT_SOC_RST_CTRL0 */
-#define BCL_RST_BIT				BIT(2)
 #define MEM_RST_BIT				BIT(1)
 #define ALG_RST_BIT				BIT(0)
+
+/* BCL_RESET */
+#define BCL_RESET_BIT				BIT(2)
 
 /* FG_BATT_INFO register definitions */
 #define BATT_INFO_BATT_TEMP_STS(chip)		(chip->batt_info_base + 0x06)
@@ -65,7 +67,6 @@
 #define BATT_INFO_JEITA_COLD(chip)		(chip->batt_info_base + 0x63)
 #define BATT_INFO_JEITA_HOT(chip)		(chip->batt_info_base + 0x64)
 #define BATT_INFO_JEITA_TOO_HOT(chip)		(chip->batt_info_base + 0x65)
-
 /* only for v1.1 */
 #define BATT_INFO_ESR_CFG(chip)			(chip->batt_info_base + 0x69)
 /* starting from v2.0 */
@@ -102,6 +103,8 @@
 #define BATT_INFO_IADC_MSB(chip)		(chip->batt_info_base + 0xAF)
 #define BATT_INFO_TM_MISC(chip)			(chip->batt_info_base + 0xE5)
 #define BATT_INFO_TM_MISC1(chip)		(chip->batt_info_base + 0xE6)
+#define BATT_INFO_PEEK_MUX1(chip)		(chip->batt_info_base + 0xEB)
+#define BATT_INFO_RDBACK(chip)			(chip->batt_info_base + 0xEF)
 
 /* BATT_INFO_BATT_TEMP_STS */
 #define JEITA_TOO_HOT_STS_BIT			BIT(7)
@@ -271,6 +274,9 @@
 #define ESR_REQ_CTL_BIT				BIT(1)
 #define ESR_REQ_CTL_EN_BIT			BIT(0)
 
+/* BATT_INFO_PEEK_MUX1 */
+#define PEEK_MUX1_BIT				BIT(0)
+
 /* FG_MEM_IF register and bit definitions */
 #define MEM_IF_INT_RT_STS(chip)			((chip->mem_if_base) + 0x10)
 #define MEM_IF_MEM_ARB_CFG(chip)		((chip->mem_if_base) + 0x40)
@@ -298,7 +304,6 @@
 
 /* MEM_IF_MEM_ARB_CFG */
 #define MEM_ARB_LO_LATENCY_EN_BIT		BIT(1)
-#define MEM_ARB_REQ_BIT				BIT(0)
 
 /* MEM_IF_MEM_INTF_CFG */
 #define MEM_ACCESS_REQ_BIT			BIT(7)
@@ -347,4 +352,7 @@
 #define FG_DMA2_BASE				0x4A00
 #define FG_DMA3_BASE				0x4B00
 #define SRAM_ADDR_OFFSET			0x20
+
+/* MEM_IF_REQ */
+#define MEM_IF_ARB_REQ_BIT			BIT(0)
 #endif
