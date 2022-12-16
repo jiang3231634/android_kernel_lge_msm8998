@@ -1,7 +1,7 @@
 /*
  * MDSS MDP Interface (used by framebuffer core)
  *
- * Copyright (c) 2007-2018, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2007-2019, The Linux Foundation. All rights reserved.
  * Copyright (C) 2007 Google Incorporated
  *
  * This software is licensed under the terms of the GNU General Public
@@ -2849,15 +2849,12 @@ static DEVICE_ATTR(bw_mode_bitmap, S_IRUGO | S_IWUSR | S_IWGRP,
 		mdss_mdp_read_max_limit_bw, mdss_mdp_store_max_limit_bw);
 
 #ifdef CONFIG_LGE_VSYNC_SKIP
-static ssize_t fps_store(struct device *dev,
-	struct device_attribute *attr, const char *buf, size_t count)
+void vsync_skip_set_fps(int fps)
 {
-	ulong fps;
-
-	if (!count)
-		return -EINVAL;
-
-	fps = simple_strtoul(buf, NULL, 10);
+	if (mdss_res == NULL) {
+		pr_warn("%s: mdss_res is NULL\n");
+		return;
+	}
 
 	if (fps == 0 || fps >= 60) {
 		mdss_res->enable_skip_vsync = 0;
@@ -2877,6 +2874,20 @@ static ssize_t fps_store(struct device *dev,
 		mdss_res->skip_first = false;
 		pr_debug("Enable frame skip: Set to %lu fps.\n", fps);
 	}
+}
+
+static ssize_t fps_store(struct device *dev,
+	struct device_attribute *attr, const char *buf, size_t count)
+{
+	ulong fps;
+
+	if (!count)
+		return -EINVAL;
+
+	fps = simple_strtoul(buf, NULL, 10);
+
+	vsync_skip_set_fps(fps);
+
 	return count;
 }
 
@@ -3223,7 +3234,8 @@ static int mdss_mdp_probe(struct platform_device *pdev)
 		MDSS_MDP_REG_SPLIT_DISPLAY_EN);
 	if (intf_sel != 0) {
 		for (i = 0; i < 4; i++)
-			num_of_display_on += ((intf_sel >> i*8) & 0x000000FF);
+			num_of_display_on +=
+				(((intf_sel >> i*8) & 0x000000FF) ? 1 : 0);
 
 		/*
 		 * For split display enabled - DSI0, DSI1 interfaces are

@@ -942,7 +942,7 @@ int adreno_efuse_read_u32(struct adreno_device *adreno_dev, unsigned int offset,
 		unsigned int *val);
 void adreno_efuse_unmap(struct adreno_device *adreno_dev);
 
-uint32_t adreno_get_ucode_version(const uint32_t *data);
+u32 adreno_get_ucode_version(const u32 *data);
 
 #define ADRENO_TARGET(_name, _id) \
 static inline int adreno_is_##_name(struct adreno_device *adreno_dev) \

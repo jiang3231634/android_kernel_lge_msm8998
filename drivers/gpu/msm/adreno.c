@@ -2840,7 +2840,6 @@ u32 adreno_get_ucode_version(const u32 *data)
 	return  version | ((data[3] & 0xfff000) >> 12);
 }
 
-
 static const struct kgsl_functable adreno_functable = {
 	/* Mandatory functions */
 	.regread = adreno_regread,

@@ -15,25 +15,8 @@
     dsi_sw49410_rev1_dsc_1440_3120_cmd: qcom,dsi_sw49410_rev1_dsc_1440_3120_cmd_display {
         qcom,mdss-dsi-panel-name = "SW49410 cmd mode dsc dsi panel";
 		qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
-		qcom,mdss-dsi-panel-framerate = <60>;
 		qcom,mdss-dsi-virtual-channel-id = <0>;
 		qcom,mdss-dsi-stream = <0>;
-		qcom,mdss-dsi-panel-width = <1440>;
-		qcom,mdss-dsi-panel-height = <3120>;
-		qcom,mdss-dsi-h-front-porch = <168>;
-		qcom,mdss-dsi-h-back-porch = <84>;
-		qcom,mdss-dsi-h-pulse-width = <4>;
-		qcom,mdss-dsi-h-sync-skew = <0>;
-		qcom,mdss-dsi-v-back-porch = <18>;
-		qcom,mdss-dsi-v-front-porch = <2>;
-		qcom,mdss-dsi-v-pulse-width = <18>;
-		qcom,mdss-dsi-h-left-border = <0>;
-		qcom,mdss-dsi-h-right-border = <0>;
-		qcom,mdss-dsi-v-top-border = <0>;
-		qcom,mdss-dsi-v-bottom-border = <0>;
-		qcom,mdss-dsi-panel-timings = [00 1D 07 07 23 22 07 07 05 03 04 00];
-		qcom,mdss-dsi-t-clk-post = <0x0D>;
-		qcom,mdss-dsi-t-clk-pre = <0x2D>;
 		qcom,mdss-dsi-bpp = <24>;
 		qcom,mdss-dsi-color-order = "rgb_swap_rgb";
 		qcom,mdss-dsi-underflow-color = <0xff>;
@@ -44,7 +27,6 @@
 		qcom,mdss-dsi-bllp-eof-power-mode;
 		qcom,mdss-dsi-bllp-power-mode;
 		qcom,partial-update-enabled = "single_roi";
-		qcom,panel-roi-alignment = <1440 60 1440 60 1440 60>;
 		qcom,mdss-dsi-lane-0-state;
 		qcom,mdss-dsi-lane-1-state;
 		qcom,mdss-dsi-lane-2-state;
@@ -68,106 +50,12 @@
 		qcom,mdss-dsi-panel-peak-brightness = <5000000>;	/* max. 500nits */
 		qcom,mdss-dsi-panel-blackness-level = <3022>;
 
-		qcom,mdss-dsi-on-command = [
-			/* TE On */
-			15 01 00 00 00 00 02 35 00
-			/* Page Address Set */
-			39 01 00 00 00 00 05 2B 00 00 0C 2F
-			/* BLU Control */
-			15 01 00 00 00 00 02 51 FF
-			15 01 00 00 00 00 02 53 2C
-			15 01 00 00 00 00 02 5E 00
-			15 01 00 00 00 00 02 55 81
-			/*Manufacturer protection*/
-			15 01 00 00 00 00 02 B0 AC
-			/*Source Control*/
-			39 01 00 00 00 00 09 B3 04 04 28 08 5A 12 23 02
-			/*Gate & Mux Control*/
-			39 01 00 00 00 00 20 B4 11 04 02 02 02 02 02 01 01 01 01 01 01 D0 E4 E4 E4 93 4E 39 0A 10 18 25 24 00 00 00 00 00 00
-			/*Sync Setup*/
-			39 01 00 00 00 00 09 B5 2E 0F 10 C0 00 10 C0 00
-			/*Panel Setting*/
-			39 01 00 00 00 00 06 B6 03 05 0B B3 30
-			/*Touch Timing Control*/
-			39 01 00 00 00 00 20 B8 57 02 90 40 5D D0 05 00 00 18 22 04 01 02 90 40 4C C0 04 00 00 18 22 04 01 08 00 3A 86 83 00
-			/*Touch Source Setting*/
-			39 01 00 00 00 00 06 B9 64 64 2A 3F EE
-			/*DSC Configuration*/
-			39 01 00 00 00 00 0C BA 3D 1F 01 FF 01 3C 1F 01 FF 01 00
-			/*Low Rate Refresh Setting*/
-			39 01 00 00 00 00 05 BC 00 00 00 90
-			/*Black Frame Setting*/
-			39 01 00 00 00 00 03 BD 00 00
-			/* U2 Corner Down */
-			39 01 00 00 00 00 03 BF 4F 02
-			/*Internal Oscillator Setting*/
-			39 01 00 00 00 00 0B C0 01 04 18 07 11 10 03 00 01 05
-			/*Power Control1*/
-			39 01 00 00 00 00 07 C1 01 00 F0 C2 CF 0C
-			/*Power Control2*/
-			39 01 00 00 00 00 09 C2 CC 44 44 20 22 26 21 00
-			/*Power Control3*/
-			39 01 00 00 00 00 13 C3 92 11 09 09 11 CC 02 02 A4 A4 02 A2 38 28 14 40 38 C0
-			/*Vcom Setting*/
-			39 01 00 00 00 00 03 C4 26 00
-			/*Power Sequence Option Configuration*/
-			39 01 00 00 00 00 06 C9 05 5D 03 04 00
-			/*Abrupt Power Off Control*/
-			39 01 00 00 00 00 03 CA 9B 10
-			/*LFD Control*/
-			39 01 00 00 00 00 06 CB F3 90 3D 30 CC
-			/*Tail TFT Setting*/
-			39 01 00 00 00 00 06 CC 00 40 50 90 41
-			/*U2 Option*/
-			39 01 00 00 00 00 03 CE 00 00
-			/*Gamma*/
-			39 01 00 00 00 00 A9 D0 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 94 94 3F 3F A4 A4 95 95 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01
-			39 01 00 00 00 00 A9 D1 12 05 20 1B 2E 29 41 3F 52 52 6A 6A 72 72 7a 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01
-			39 01 00 00 00 00 A9 D2 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01
-			/* MPLUS Control */
-			39 01 00 00 00 00 05 D3 12 01 00 00
-			/*Mplus Setting*/
-			39 01 00 00 00 00 96 D4 DC 5F 9C BE 39 39 39 47 48 48 48 3A 00 03 6D 80 00 00 8C 66 00 00 8C 66 00 00 8C 66 00 0A 48 80 00 0A 48 80 00 0A 48 80 00 0A 48 80 20 0A 14 0A 18 00 1C CC 23 9E 23 9E 01 01 01 01 04 04 04 04 01 00 02 80 00 10 00 10 00 10 13 9E 13 9E 13 9E 13 9E 05 05 05 05 05 05 05 05 23 9E FF FF 13 33 18 00 16 66 10 00 FF 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 00 0B 00 0C 00 0D 00 0E 00 0F 00 1B 25 DC 18 00 20 00 1C E1 00 FF E0 C8 C8 41 8F
-			/*Notch Up Gradation*/
-			39 01 00 00 00 00 21 AD 01 02 03 04 05 06 06 06 06 06 06 06 06 06 06 06 20 40 60 90 C0 F0 FF FF FF FF FF FF FF FF FF FF
-			/*Notch Down Gradation*/
-			39 01 00 00 00 00 21 AE 01 02 03 04 05 06 06 06 06 06 06 06 06 06 06 06 20 40 60 90 C0 F0 FF FF FF FF FF FF FF FF FF FF
-			/*GIP Setting*/
-			39 01 00 00 00 00 1B E5 0B 0A 0C 00 02 04 06 08 0F 1B 02 1A 1A 0B 0A 0C 01 03 05 07 09 10 1B 03 1A 1A
-			/*Mux Setting*/
-			39 01 00 00 00 00 11 E6 11 12 13 14 15 16 17 18 11 12 13 14 15 16 17 18
-			/*Test1*/
-			39 01 00 00 00 00 07 ED 21 49 00 00 00 00
-			/*BLU Control*/
-			15 01 00 00 00 00 02 55 81
-			/*Sharpness*/
-			39 01 00 00 00 00 06 F3 00 01 00 0D 00
-			39 01 00 00 00 00 0E F4 00 00 40 83 C5 00 01 00 00 00 00 00 00
-			39 01 00 00 00 00 18 FB 20 40 60 80 a0 c0 e0 13 18 18 18 16 0D 0D 00 C7 CF D8 E1 EA F3 F9 FF
-			/*Gamma Correction*/
-			39 01 00 00 00 00 02 F5 00
-			39 01 00 00 00 00 11 F6 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
-			39 01 00 00 00 00 11 F7 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
-			39 01 00 00 00 00 11 F8 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
-			/*BLU PWM Control*/
-			39 01 00 00 00 00 0E FC 13 70 D0 26 30 7C 02 FF 12 22 22 10 00
-			/* Normal Display mode on */
-			05 01 00 00 00 00 01 13
-			/* Sleep Out + min 120ms */
-			05 01 00 00 80 00 01 11
-			/*Black Frame Setting*/
-			39 01 00 00 00 00 03 BD 01 05
-			05 01 00 00 05 00 01 29
-		];
-
 		qcom,mdss-dsi-off-command = [
 			/* Display Off */
 			05 01 00 00 00 00 01 28
 			/* Sleep In + min 120ms */
 			05 01 00 00 80 00 01 10
 		];
-
-		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
 
 		lge,mdss-dsi-extra-command-names = "u2", "u3", "on-with-apo", "mplus-ctrl", "mplus-wr-start1", "mplus-wr-start2", "mplus-wr-start3", "ie-cabc-ctrl", "ht-tune-0", "ht-tune-1", "ht-tune-2", "ht-tune-3", "ht-tune-4";
@@ -441,11 +329,6 @@
 		qcom,mdss-pan-physical-width-dimension = <65>;
 		qcom,mdss-pan-physical-height-dimension = <140>;
 
-		qcom,compression-mode = "dsc";
-		qcom,mdss-dsc-version = <0x11>;
-		qcom,mdss-dsc-scr-version = <0x1>;
-		qcom,config-select = <&dsi_sw49410_dsc_cmd_config1>;
-
 		lge,panel-type = "LGD/SiW - SW49410 cmd panel";
 		lge,panel-id = <0>;
 
@@ -460,6 +343,241 @@
 				qcom,mdss-dsc-block-prediction-enable;
 		//		qcom,mdss-dsi-pps-command-state = "dsi_hs_mode";
 		};
-
+		qcom,mdss-dsi-display-timings {
+			timing-60Hz@0 {
+				qcom,mdss-dsi-timing-default;
+				qcom,mdss-dsi-panel-framerate = <60>;
+				qcom,mdss-dsi-panel-width = <1440>;
+				qcom,mdss-dsi-panel-height = <3120>;
+				qcom,mdss-dsi-h-front-porch = <168>;
+				qcom,mdss-dsi-h-back-porch = <84>;
+				qcom,mdss-dsi-h-pulse-width = <4>;
+				qcom,mdss-dsi-h-sync-skew = <0>;
+				qcom,mdss-dsi-v-back-porch = <18>;
+				qcom,mdss-dsi-v-front-porch = <2>;
+				qcom,mdss-dsi-v-pulse-width = <18>;
+				qcom,mdss-dsi-h-left-border = <0>;
+				qcom,mdss-dsi-h-right-border = <0>;
+				qcom,mdss-dsi-v-top-border = <0>;
+				qcom,mdss-dsi-v-bottom-border = <0>;
+				qcom,mdss-dsi-panel-timings = [00 1D 07 07 23 22 07 07 05 03 04 00];
+				qcom,mdss-dsi-t-clk-post = <0x0D>;
+				qcom,mdss-dsi-t-clk-pre = <0x2D>;
+				qcom,panel-roi-alignment = <1440 60 1440 60 1440 60>;
+				qcom,config-select = <&dsi_sw49410_dsc_cmd_config1>;
+				qcom,compression-mode = "dsc";
+				qcom,mdss-dsc-version = <0x11>;
+				qcom,mdss-dsc-scr-version = <0x1>;
+				qcom,mdss-dsi-on-command = [
+					/* TE On */
+					15 01 00 00 00 00 02 35 00
+					/* Page Address Set */
+					39 01 00 00 00 00 05 2B 00 00 0C 2F
+					/* BLU Control */
+					15 01 00 00 00 00 02 51 FF
+					15 01 00 00 00 00 02 53 2C
+					15 01 00 00 00 00 02 5E 00
+					15 01 00 00 00 00 02 55 81
+					/*Manufacturer protection*/
+					15 01 00 00 00 00 02 B0 AC
+					/*Source Control*/
+					39 01 00 00 00 00 09 B3 04 04 28 08 5A 12 23 02
+					/*Gate & Mux Control*/
+					39 01 00 00 00 00 20 B4 11 04 02 02 02 02 02 01 01 01 01 01 01 D0 E4 E4 E4 93 4E 39 0A 10 18 25 24 00 00 00 00 00 00
+					/*Sync Setup*/
+					39 01 00 00 00 00 09 B5 2E 0F 10 C0 00 10 C0 00
+					/*Panel Setting*/
+					39 01 00 00 00 00 06 B6 03 05 0B B3 30
+					/*Touch Timing Control*/
+					39 01 00 00 00 00 20 B8 57 02 90 40 5D D0 05 00 00 18 22 04 01 02 90 40 4C C0 04 00 00 18 22 04 01 08 00 3A 86 83 00
+					/*Touch Source Setting*/
+					39 01 00 00 00 00 06 B9 64 64 2A 3F EE
+					/*DSC Configuration*/
+					39 01 00 00 00 00 0C BA 3D 1F 01 FF 01 3C 1F 01 FF 01 00
+					/*Low Rate Refresh Setting*/
+					39 01 00 00 00 00 05 BC 00 00 00 90
+					/*Black Frame Setting*/
+					39 01 00 00 00 00 03 BD 00 00
+					/* U2 Corner Down */
+					39 01 00 00 00 00 03 BF 4F 02
+					/*Internal Oscillator Setting*/
+					39 01 00 00 00 00 0B C0 01 04 18 07 11 10 03 00 01 05
+					/*Power Control1*/
+					39 01 00 00 00 00 07 C1 01 00 F0 C2 CF 0C
+					/*Power Control2*/
+					39 01 00 00 00 00 09 C2 CC 44 44 20 22 26 21 00
+					/*Power Control3*/
+					39 01 00 00 00 00 13 C3 92 11 09 09 11 CC 02 02 A4 A4 02 A2 38 28 14 40 38 C0
+					/*Vcom Setting*/
+					39 01 00 00 00 00 03 C4 26 00
+					/*Power Sequence Option Configuration*/
+					39 01 00 00 00 00 06 C9 05 5D 03 04 00
+					/*Abrupt Power Off Control*/
+					39 01 00 00 00 00 03 CA 9B 10
+					/*LFD Control*/
+					39 01 00 00 00 00 06 CB F3 90 3D 30 CC
+					/*Tail TFT Setting*/
+					39 01 00 00 00 00 06 CC 00 40 50 90 41
+					/*U2 Option*/
+					39 01 00 00 00 00 03 CE 00 00
+					/*Gamma*/
+					39 01 00 00 00 00 A9 D0 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 94 94 3F 3F A4 A4 95 95 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01
+					39 01 00 00 00 00 A9 D1 12 05 20 1B 2E 29 41 3F 52 52 6A 6A 72 72 7a 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01
+					39 01 00 00 00 00 A9 D2 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01
+					/* MPLUS Control */
+					39 01 00 00 00 00 05 D3 12 01 00 00
+					/*Mplus Setting*/
+					39 01 00 00 00 00 96 D4 DC 5F 9C BE 39 39 39 47 48 48 48 3A 00 03 6D 80 00 00 8C 66 00 00 8C 66 00 00 8C 66 00 0A 48 80 00 0A 48 80 00 0A 48 80 00 0A 48 80 20 0A 14 0A 18 00 1C CC 23 9E 23 9E 01 01 01 01 04 04 04 04 01 00 02 80 00 10 00 10 00 10 13 9E 13 9E 13 9E 13 9E 05 05 05 05 05 05 05 05 23 9E FF FF 13 33 18 00 16 66 10 00 FF 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 00 0B 00 0C 00 0D 00 0E 00 0F 00 1B 25 DC 18 00 20 00 1C E1 00 FF E0 C8 C8 41 8F
+					/*Notch Up Gradation*/
+					39 01 00 00 00 00 21 AD 01 02 03 04 05 06 06 06 06 06 06 06 06 06 06 06 20 40 60 90 C0 F0 FF FF FF FF FF FF FF FF FF FF
+					/*Notch Down Gradation*/
+					39 01 00 00 00 00 21 AE 01 02 03 04 05 06 06 06 06 06 06 06 06 06 06 06 20 40 60 90 C0 F0 FF FF FF FF FF FF FF FF FF FF
+					/*GIP Setting*/
+					39 01 00 00 00 00 1B E5 0B 0A 0C 00 02 04 06 08 0F 1B 02 1A 1A 0B 0A 0C 01 03 05 07 09 10 1B 03 1A 1A
+					/*Mux Setting*/
+					39 01 00 00 00 00 11 E6 11 12 13 14 15 16 17 18 11 12 13 14 15 16 17 18
+					/*Test1*/
+					39 01 00 00 00 00 07 ED 21 49 00 00 00 00
+					/*BLU Control*/
+					15 01 00 00 00 00 02 55 81
+					/*Sharpness*/
+					39 01 00 00 00 00 06 F3 00 01 00 0D 00
+					39 01 00 00 00 00 0E F4 00 00 40 83 C5 00 01 00 00 00 00 00 00
+					39 01 00 00 00 00 18 FB 20 40 60 80 a0 c0 e0 13 18 18 18 16 0D 0D 00 C7 CF D8 E1 EA F3 F9 FF
+					/*Gamma Correction*/
+					39 01 00 00 00 00 02 F5 00
+					39 01 00 00 00 00 11 F6 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
+					39 01 00 00 00 00 11 F7 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
+					39 01 00 00 00 00 11 F8 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
+					/*BLU PWM Control*/
+					39 01 00 00 00 00 0E FC 13 70 D0 26 30 7C 02 FF 12 22 22 10 00
+					/* Normal Display mode on */
+					05 01 00 00 00 00 01 13
+					/* Sleep Out + min 120ms */
+					05 01 00 00 80 00 01 11
+					/*Black Frame Setting*/
+					39 01 00 00 00 00 03 BD 01 05
+					05 01 00 00 05 00 01 29
+				];
+				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
+			}; // end of timing-60Hz@0
+			timing-fake30Hz@1 {
+				qcom,mdss-dsi-panel-framerate = <30>;
+				lge,mdss-dsi-panel-framerate-div = <2>;
+				qcom,mdss-dsi-panel-width = <1440>;
+				qcom,mdss-dsi-panel-height = <3120>;
+				qcom,mdss-dsi-h-front-porch = <168>;
+				qcom,mdss-dsi-h-back-porch = <84>;
+				qcom,mdss-dsi-h-pulse-width = <4>;
+				qcom,mdss-dsi-h-sync-skew = <0>;
+				qcom,mdss-dsi-v-back-porch = <18>;
+				qcom,mdss-dsi-v-front-porch = <2>;
+				qcom,mdss-dsi-v-pulse-width = <18>;
+				qcom,mdss-dsi-h-left-border = <0>;
+				qcom,mdss-dsi-h-right-border = <0>;
+				qcom,mdss-dsi-v-top-border = <0>;
+				qcom,mdss-dsi-v-bottom-border = <0>;
+				qcom,mdss-dsi-panel-timings = [00 1D 07 07 23 22 07 07 05 03 04 00];
+				qcom,mdss-dsi-t-clk-post = <0x0D>;
+				qcom,mdss-dsi-t-clk-pre = <0x2D>;
+				qcom,panel-roi-alignment = <1440 60 1440 60 1440 60>;
+				qcom,config-select = <&dsi_sw49410_dsc_cmd_config1>;
+				qcom,compression-mode = "dsc";
+				qcom,mdss-dsc-version = <0x11>;
+				qcom,mdss-dsc-scr-version = <0x1>;
+				qcom,mdss-dsi-on-command = [
+					/* TE On */
+					15 01 00 00 00 00 02 35 00
+					/* Page Address Set */
+					39 01 00 00 00 00 05 2B 00 00 0C 2F
+					/* BLU Control */
+					15 01 00 00 00 00 02 51 FF
+					15 01 00 00 00 00 02 53 2C
+					15 01 00 00 00 00 02 5E 00
+					15 01 00 00 00 00 02 55 81
+					/*Manufacturer protection*/
+					15 01 00 00 00 00 02 B0 AC
+					/*Source Control*/
+					39 01 00 00 00 00 09 B3 04 04 28 08 5A 12 23 02
+					/*Gate & Mux Control*/
+					39 01 00 00 00 00 20 B4 11 04 02 02 02 02 02 01 01 01 01 01 01 D0 E4 E4 E4 93 4E 39 0A 10 18 25 24 00 00 00 00 00 00
+					/*Sync Setup*/
+					39 01 00 00 00 00 09 B5 2E 0F 10 C0 00 10 C0 00
+					/*Panel Setting*/
+					39 01 00 00 00 00 06 B6 03 05 0B B3 30
+					/*Touch Timing Control*/
+					39 01 00 00 00 00 20 B8 57 02 90 40 5D D0 05 00 00 18 22 04 01 02 90 40 4C C0 04 00 00 18 22 04 01 08 00 3A 86 83 00
+					/*Touch Source Setting*/
+					39 01 00 00 00 00 06 B9 64 64 2A 3F EE
+					/*DSC Configuration*/
+					39 01 00 00 00 00 0C BA 3D 1F 01 FF 01 3C 1F 01 FF 01 00
+					/*Low Rate Refresh Setting*/
+					39 01 00 00 00 00 05 BC 00 00 00 90
+					/*Black Frame Setting*/
+					39 01 00 00 00 00 03 BD 00 00
+					/* U2 Corner Down */
+					39 01 00 00 00 00 03 BF 4F 02
+					/*Internal Oscillator Setting*/
+					39 01 00 00 00 00 0B C0 01 04 18 07 11 10 03 00 01 05
+					/*Power Control1*/
+					39 01 00 00 00 00 07 C1 01 00 F0 C2 CF 0C
+					/*Power Control2*/
+					39 01 00 00 00 00 09 C2 CC 44 44 20 22 26 21 00
+					/*Power Control3*/
+					39 01 00 00 00 00 13 C3 92 11 09 09 11 CC 02 02 A4 A4 02 A2 38 28 14 40 38 C0
+					/*Vcom Setting*/
+					39 01 00 00 00 00 03 C4 26 00
+					/*Power Sequence Option Configuration*/
+					39 01 00 00 00 00 06 C9 05 5D 03 04 00
+					/*Abrupt Power Off Control*/
+					39 01 00 00 00 00 03 CA 9B 10
+					/*LFD Control*/
+					39 01 00 00 00 00 06 CB F3 90 3D 30 CC
+					/*Tail TFT Setting*/
+					39 01 00 00 00 00 06 CC 00 40 50 90 41
+					/*U2 Option*/
+					39 01 00 00 00 00 03 CE 00 00
+					/*Gamma*/
+					39 01 00 00 00 00 A9 D0 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 95 95 3F 3F A2 A2 94 94 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01 12 05 20 1B 2C 28 3F 3D 4F 4F 66 66 6E 6E 76 76 80 80 88 88 94 94 3F 3F A4 A4 95 95 8B 8B 81 81 75 75 66 66 47 47 2D 2D 00 01
+					39 01 00 00 00 00 A9 D1 12 05 20 1B 2E 29 41 3F 52 52 6A 6A 72 72 7a 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01 12 05 20 1B 2E 29 41 3f 52 52 6A 6A 72 72 7A 7A 84 84 8C 8C 9A 9A 3F 3F 9B 9B 8D 8D 84 84 7A 7A 6E 6E 5F 5F 41 41 2A 2A 00 01
+					39 01 00 00 00 00 A9 D2 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01 12 05 20 1B 2F 2A 43 41 55 55 6E 6E 76 76 7E 7E 88 88 90 90 9F 9F 3F 3F 95 95 86 86 7D 7D 74 74 68 68 59 59 3C 3C 26 26 00 01
+					/* MPLUS Control */
+					39 01 00 00 00 00 05 D3 12 01 00 00
+					/*Mplus Setting*/
+					39 01 00 00 00 00 96 D4 DC 5F 9C BE 39 39 39 47 48 48 48 3A 00 03 6D 80 00 00 8C 66 00 00 8C 66 00 00 8C 66 00 0A 48 80 00 0A 48 80 00 0A 48 80 00 0A 48 80 20 0A 14 0A 18 00 1C CC 23 9E 23 9E 01 01 01 01 04 04 04 04 01 00 02 80 00 10 00 10 00 10 13 9E 13 9E 13 9E 13 9E 05 05 05 05 05 05 05 05 23 9E FF FF 13 33 18 00 16 66 10 00 FF 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 00 0B 00 0C 00 0D 00 0E 00 0F 00 1B 25 DC 18 00 20 00 1C E1 00 FF E0 C8 C8 41 8F
+					/*Notch Up Gradation*/
+					39 01 00 00 00 00 21 AD 01 02 03 04 05 06 06 06 06 06 06 06 06 06 06 06 20 40 60 90 C0 F0 FF FF FF FF FF FF FF FF FF FF
+					/*Notch Down Gradation*/
+					39 01 00 00 00 00 21 AE 01 02 03 04 05 06 06 06 06 06 06 06 06 06 06 06 20 40 60 90 C0 F0 FF FF FF FF FF FF FF FF FF FF
+					/*GIP Setting*/
+					39 01 00 00 00 00 1B E5 0B 0A 0C 00 02 04 06 08 0F 1B 02 1A 1A 0B 0A 0C 01 03 05 07 09 10 1B 03 1A 1A
+					/*Mux Setting*/
+					39 01 00 00 00 00 11 E6 11 12 13 14 15 16 17 18 11 12 13 14 15 16 17 18
+					/*Test1*/
+					39 01 00 00 00 00 07 ED 21 49 00 00 00 00
+					/*BLU Control*/
+					15 01 00 00 00 00 02 55 81
+					/*Sharpness*/
+					39 01 00 00 00 00 06 F3 00 01 00 0D 00
+					39 01 00 00 00 00 0E F4 00 00 40 83 C5 00 01 00 00 00 00 00 00
+					39 01 00 00 00 00 18 FB 20 40 60 80 a0 c0 e0 13 18 18 18 16 0D 0D 00 C7 CF D8 E1 EA F3 F9 FF
+					/*Gamma Correction*/
+					39 01 00 00 00 00 02 F5 00
+					39 01 00 00 00 00 11 F6 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
+					39 01 00 00 00 00 11 F7 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
+					39 01 00 00 00 00 11 F8 40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00
+					/*BLU PWM Control*/
+					39 01 00 00 00 00 0E FC 13 70 D0 26 30 7C 02 FF 12 22 22 10 00
+					/* Normal Display mode on */
+					05 01 00 00 00 00 01 13
+					/* Sleep Out + min 120ms */
+					05 01 00 00 80 00 01 11
+					/*Black Frame Setting*/
+					39 01 00 00 00 00 03 BD 01 05
+					05 01 00 00 05 00 01 29
+				];
+				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
+			}; // end of timing-fake30Hz@1
+		};
 	};
 };
