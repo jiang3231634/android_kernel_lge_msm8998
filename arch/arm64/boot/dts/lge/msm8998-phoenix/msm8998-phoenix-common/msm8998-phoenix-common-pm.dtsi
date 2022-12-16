@@ -395,6 +395,7 @@
 				"adc", "batt_id", "/sys/class/lge_power/lge_batt_id/valid_batt_id",
 				"adc", "pa_therm0", "/sys/class/hwmon/hwmon1/device/pa_therm0",
 				"adc", "pa_therm1", "/sys/class/hwmon/hwmon1/device/pa_therm1",
+				"adc", "quiet_therm", "/sys/class/hwmon/hwmon1/device/bd_therm_2",
 				"adc", "usb_in", "/sys/class/power_supply/usb/voltage_now",
 				"adc", "vcoin", "/sys/class/hwmon/hwmon1/device/vcoin",
 				"adc", "vph_pwr", "/sys/class/hwmon/hwmon1/device/vph_pwr",
@@ -458,7 +459,8 @@
 				/* CPU */
 				"cpu", "cpu_idle_modes", "/sys/module/lpm_levels/system/",
 				/* GPU */
-				"gpu", "busy", "/sys/class/kgsl/kgsl-3d0/gpubusy",
+				"gpu", "busy",   "/sys/class/kgsl/kgsl-3d0/gpubusy",
+				"gpu", "gpuclk", "/sys/class/kgsl/kgsl-3d0/gpuclk",
 				/* PLATFORM */
 				"platform", "speed_bin", "NULL",
 				"platform", "pvs_bin", "NULL",

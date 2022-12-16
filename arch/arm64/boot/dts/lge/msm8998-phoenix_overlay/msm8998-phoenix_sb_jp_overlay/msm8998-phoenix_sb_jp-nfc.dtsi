@@ -13,8 +13,8 @@
 &i2c_6 { /* BLSP1 QUP6 (NFC) */
 	qcom,clk-freq-out = <400000>;
 	status = "ok";
-	cxd224x-i2c@28 {
-		compatible = "sony,cxd224x";
+	cxd22xx-i2c@28 {
+		compatible = "sony,cxd22xx-i2c";
 		reg = <0x28>;
 		status = "ok";
 		sony,gpio_sda = <&tlmm 43 0x00>;

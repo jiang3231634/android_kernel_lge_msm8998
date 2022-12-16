@@ -99,14 +99,13 @@ lim_process_disassoc_frame(tpAniSirGlobal pMac, uint8_t *pRxPacketInfo,
 	if (LIM_IS_STA_ROLE(psessionEntry) &&
 		((eLIM_SME_WT_DISASSOC_STATE == psessionEntry->limSmeState) ||
 		(eLIM_SME_WT_DEAUTH_STATE == psessionEntry->limSmeState))) {
-		if (!(psessionEntry->disassocmsgcnt & 0xF)) {
+		if (!(pMac->lim.disassocMsgCnt & 0xF)) {
 			pe_debug("received Disassoc frame in %s"
-				"(already processing previously received Disassoc frame)"
-				"Dropping this.. Disassoc Failed %d",
-				lim_sme_state_str(psessionEntry->limSmeState),
-					   ++psessionEntry->disassocmsgcnt);
+				"already processing previously received Disassoc frame, dropping this %d",
+				 lim_sme_state_str(psessionEntry->limSmeState),
+				 ++pMac->lim.disassocMsgCnt);
 		} else {
-			psessionEntry->disassocmsgcnt++;
+			pMac->lim.disassocMsgCnt++;
 		}
 		return;
 	}
@@ -147,12 +146,12 @@ lim_process_disassoc_frame(tpAniSirGlobal pMac, uint8_t *pRxPacketInfo,
 	reasonCode = sir_read_u16(pBody);
 
 	pe_debug("Received Disassoc frame for Addr: " MAC_ADDRESS_STR
-			  "(mlm state=%s, sme state=%d RSSI=%d),"
-			  "with reason code %d [%s] from " MAC_ADDRESS_STR,
-		       MAC_ADDR_ARRAY(pHdr->da),
-		       lim_mlm_state_str(psessionEntry->limMlmState),
-		       psessionEntry->limSmeState, frame_rssi, reasonCode,
-		       lim_dot11_reason_str(reasonCode), MAC_ADDR_ARRAY(pHdr->sa));
+		 "(mlm state=%s, sme state=%d RSSI=%d),"
+		 "with reason code %d [%s] from " MAC_ADDRESS_STR,
+		 MAC_ADDR_ARRAY(pHdr->da),
+		 lim_mlm_state_str(psessionEntry->limMlmState),
+		 psessionEntry->limSmeState, frame_rssi, reasonCode,
+		 lim_dot11_reason_str(reasonCode), MAC_ADDR_ARRAY(pHdr->sa));
 	lim_diag_event_report(pMac, WLAN_PE_DIAG_DISASSOC_FRAME_EVENT,
 		psessionEntry, 0, reasonCode);
 
@@ -190,8 +189,9 @@ lim_process_disassoc_frame(tpAniSirGlobal pMac, uint8_t *pRxPacketInfo,
 		return;
 	}
 
-	if (psessionEntry->disassocmsgcnt != 0)
-		psessionEntry->disassocmsgcnt = 0;
+	if (pMac->lim.disassocMsgCnt != 0) {
+		pMac->lim.disassocMsgCnt = 0;
+	}
 
 	/** If we are in the Wait for ReAssoc Rsp state */
 	if (lim_is_reassoc_in_progress(pMac, psessionEntry)) {
@@ -281,16 +281,18 @@ lim_process_disassoc_frame(tpAniSirGlobal pMac, uint8_t *pRxPacketInfo,
 	}
 
 	if ((pStaDs->mlmStaContext.mlmState == eLIM_MLM_WT_DEL_STA_RSP_STATE) ||
-	    (pStaDs->mlmStaContext.mlmState == eLIM_MLM_WT_DEL_BSS_RSP_STATE)) {
+	    (pStaDs->mlmStaContext.mlmState == eLIM_MLM_WT_DEL_BSS_RSP_STATE) ||
+	    pStaDs->sta_deletion_in_progress) {
 		/**
 		 * Already in the process of deleting context for the peer
 		 * and received Disassociation frame. Log and Ignore.
 		 */
-		pe_err("received Disassoc frame in state: %d from"
-			MAC_ADDRESS_STR, pStaDs->mlmStaContext.mlmState,
-			MAC_ADDR_ARRAY(pHdr->sa));
+		pe_debug("Deletion is in progress (%d) for peer:%pM in mlmState %d",
+			 pStaDs->sta_deletion_in_progress, pHdr->sa,
+			 pStaDs->mlmStaContext.mlmState);
 		return;
 	}
+	pStaDs->sta_deletion_in_progress = true;
 	lim_disassoc_tdls_peers(pMac, psessionEntry, pHdr->sa);
 	if (pStaDs->mlmStaContext.mlmState != eLIM_MLM_LINK_ESTABLISHED_STATE) {
 		/**

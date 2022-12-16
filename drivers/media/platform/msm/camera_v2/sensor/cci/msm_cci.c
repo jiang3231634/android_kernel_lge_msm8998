@@ -32,7 +32,8 @@
 #define CYCLES_PER_MICRO_SEC_DEFAULT 4915
 #define CCI_MAX_DELAY 1000000
 
-#define CCI_TIMEOUT msecs_to_jiffies(500)
+
+#define CCI_TIMEOUT msecs_to_jiffies(1000) // LGE_CHANGE, change CCI_TIMEOUT 500ms to 1000ms(CN#04192396), 2019-09-19, junsung.yang@lge.com
 
 /* TODO move this somewhere else */
 #define MSM_CCI_DRV_NAME "msm_cci"

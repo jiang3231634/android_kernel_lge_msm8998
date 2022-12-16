@@ -1383,16 +1383,6 @@ static void purge_configs_funcs(struct gadget_info *gi)
 						" '%s'/%pK\n", f->name, f);
 				f->unbind(c, f);
 			}
-#ifdef CONFIG_LGE_USB_GADGET_MULTI_CONFIG
-			if (f->multi_config_support) {
-				if (f->fs_descriptors)
-					usb_free_descriptors(f->fs_descriptors);
-				if (f->hs_descriptors)
-					usb_free_descriptors(f->hs_descriptors);
-				if (f->ss_descriptors)
-					usb_free_descriptors(f->ss_descriptors);
-			}
-#endif
 		}
 		c->next_interface_id = 0;
 		memset(c->interface, 0, sizeof(c->interface));
@@ -1534,19 +1524,6 @@ static int configfs_composite_bind(struct usb_gadget *gadget,
 				list_add(&f->list, &cfg->func_list);
 				goto err_purge_funcs;
 			}
-#ifdef CONFIG_LGE_USB_GADGET_MULTI_CONFIG
-			if (f->multi_config_support) {
-				if (f->fs_descriptors)
-					f->fs_descriptors =
-						usb_copy_descriptors(f->fs_descriptors);
-				if (f->hs_descriptors)
-					f->hs_descriptors =
-						usb_copy_descriptors(f->hs_descriptors);
-				if (f->ss_descriptors)
-					f->ss_descriptors =
-						usb_copy_descriptors(f->ss_descriptors);
-			}
-#endif
 		}
 		usb_ep_autoconfig_reset(cdev->gadget);
 	}

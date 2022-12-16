@@ -49,7 +49,7 @@ TARGET_KERNEL_CROSS_COMPILE_PREFIX := $(strip $(TARGET_KERNEL_CROSS_COMPILE_PREF
 ifeq ($(TARGET_KERNEL_CROSS_COMPILE_PREFIX),)
 KERNEL_CROSS_COMPILE := arm-eabi-
 else
-KERNEL_CROSS_COMPILE := $(TARGET_KERNEL_CROSS_COMPILE_PREFIX)
+KERNEL_CROSS_COMPILE := $(shell pwd)/$(TARGET_TOOLS_PREFIX)
 endif
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
@@ -103,7 +103,14 @@ endif
 ifeq ($(TARGET_KERNEL_APPEND_DTB), true)
 $(info Using appended DTB)
 TARGET_PREBUILT_INT_KERNEL := $(TARGET_PREBUILT_INT_KERNEL)-dtb
+else
+$(info Using DTB Image)
+INSTALLED_DTBIMAGE_TARGET := $(PRODUCT_OUT)/dtb.img
 endif
+
+# Creating a dtb.img once the kernel is compiled if TARGET_KERNEL_APPEND_DTB is set to be false
+$(INSTALLED_DTBIMAGE_TARGET): $(INSTALLED_KERNEL_TARGET)
+	cat $(KERNEL_OUT)/arch/$(KERNEL_ARCH)/boot/dts/qcom/*.dtb > $@
 
 KERNEL_HEADERS_INSTALL := $(KERNEL_OUT)/usr
 KERNEL_MODULES_INSTALL ?= system
@@ -158,7 +165,7 @@ $(KERNEL_CONFIG): $(KERNEL_SOURCE_FILES) | $(KERNEL_OUT)
 			$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) oldconfig; fi
 
 ifeq ($(PRODUCT_SUPPORT_EXFAT), y)
-sinclude $(ANDROID_BUILD_TOP)/device/lge/common/tuxera.mk
+sinclude ./device/lge/common/tuxera.mk
 endif
 
 $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_HEADERS_INSTALL) $(KERNEL_SOURCE_FILES) | $(KERNEL_OUT)
@@ -169,14 +176,14 @@ $(TARGET_PREBUILT_INT_KERNEL): $(KERNEL_HEADERS_INSTALL) $(KERNEL_SOURCE_FILES) 
 	$(MAKE) -C $(TARGET_KERNEL_SOURCE) O=$(BUILD_ROOT_LOC)$(KERNEL_OUT) INSTALL_MOD_PATH=$(BUILD_ROOT_LOC)../$(KERNEL_MODULES_INSTALL) INSTALL_MOD_STRIP=1 $(KERNEL_MAKE_ENV) ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(KERNEL_CROSS_COMPILE) modules_install
 ifeq ($(PRODUCT_SUPPORT_EXFAT), y)
 	# Make directory /vendor/lib/modules
-	@mkdir -p $(ANDROID_BUILD_TOP)/$(PRODUCT_OUT)/vendor/lib/modules
-	@cp -f $(ANDROID_BUILD_TOP)/kernel/msm-4.4/tuxera_update.sh $(ANDROID_BUILD_TOP)
-	@sh tuxera_update.sh --target target/lg.d/mobile-msm8998-new --use-cache --latest --max-cache-entries 2 --source-dir $(ANDROID_BUILD_TOP)/kernel/msm-4.4 --output-dir $(ANDROID_BUILD_TOP)/$(KERNEL_OUT) $(SUPPORT_EXFAT_TUXERA)
+	@mkdir -p ./$(PRODUCT_OUT)/vendor/lib/modules
+	@cp -f ./kernel/msm-4.4/tuxera_update.sh .
+	@sh tuxera_update.sh --target target/lg.d/mobile-msm8998-new --use-cache --latest --max-cache-entries 2 --source-dir ./kernel/msm-4.4 --output-dir ./$(KERNEL_OUT) $(SUPPORT_EXFAT_TUXERA)
 	@tar -xzf tuxera-exfat*.tgz
 	@mkdir -p $(TARGET_OUT_EXECUTABLES)
-	@cp $(ANDROID_BUILD_TOP)/tuxera-exfat*/exfat/kernel-module/texfat.ko $(ANDROID_BUILD_TOP)/$(PRODUCT_OUT)/vendor/lib/modules
-	@cp $(ANDROID_BUILD_TOP)/tuxera-exfat*/exfat/tools/* $(TARGET_OUT_EXECUTABLES)
-	@$(ANDROID_BUILD_TOP)/$(KERNEL_OUT)/scripts/sign-file sha1 $(ANDROID_BUILD_TOP)/$(KERNEL_OUT)/certs/signing_key.pem $(ANDROID_BUILD_TOP)/$(KERNEL_OUT)/certs/signing_key.x509 $(ANDROID_BUILD_TOP)/$(PRODUCT_OUT)/vendor/lib/modules/texfat.ko
+	@cp ./tuxera-exfat*/exfat/kernel-module/texfat.ko ./$(PRODUCT_OUT)/vendor/lib/modules
+	@cp ./tuxera-exfat*/exfat/tools/* $(TARGET_OUT_EXECUTABLES)
+	@./$(KERNEL_OUT)/scripts/sign-file sha1 ./$(KERNEL_OUT)/certs/signing_key.pem ./$(KERNEL_OUT)/certs/signing_key.x509 ./$(PRODUCT_OUT)/vendor/lib/modules/texfat.ko
 	@rm -f kheaders*.tar.bz2
 	@rm -f tuxera-exfat*.tgz
 	@rm -rf tuxera-exfat*

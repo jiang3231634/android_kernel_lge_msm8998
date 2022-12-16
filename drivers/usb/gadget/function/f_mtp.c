@@ -1729,6 +1729,13 @@ static int mtp_function_set_mac_os(struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = f->config->cdev;
 	struct usb_interface_descriptor *desc;
+	struct mtp_dev *dev = func_to_mtp(f);
+
+	if (dev->is_ptp) {
+		DBG(cdev, "do not change PTP bInterfaceClass to %u in MAC OS\n",
+				USB_CLASS_VENDOR_SPEC);
+		return 0;
+	}
 
 	desc = (struct usb_interface_descriptor *)f->fs_descriptors[0];
 	desc->bInterfaceClass = USB_CLASS_VENDOR_SPEC;
