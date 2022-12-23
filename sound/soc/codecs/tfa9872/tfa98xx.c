@@ -316,16 +316,6 @@ static void tfa98xx_inputdev_unregister(struct tfa98xx *tfa98xx)
 	__tfa98xx_inputdev_check_register(tfa98xx, true);
 }
 
-#if defined(CONFIG_SND_LGE_TX_NXP_LIB)
-void tfa98xx_extcon_set_state(int ram_state)
-{
-	pr_info("%s enter: ram_status = %d\n",__func__, ram_state);
-
-	extcon_set_state_sync(edev, EXTCON_MECHANICAL, ram_state);
-}
-EXPORT_SYMBOL(tfa98xx_extcon_set_state);
-#endif
-
 #ifdef CONFIG_DEBUG_FS
 /* OTC reporting
  * Returns the MTP0 OTC bit value
