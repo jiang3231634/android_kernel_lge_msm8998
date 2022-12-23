@@ -821,6 +821,10 @@ struct mdss_panel_info {
 	int pwm_pmic_gpio;
 	int pwm_lpg_chan;
 	int pwm_period;
+#if defined(CONFIG_LGE_DISPLAY_JOAN_COMMON)
+	int blmap_size;
+	int *blmap[LGE_BLMAPMAX];
+#endif
 	bool dynamic_fps;
 	bool dynamic_bitclk;
 	u32 *supp_bitclks;

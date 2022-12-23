@@ -326,7 +326,7 @@ void lge_mdss_panel_parse_dt_blmaps_joan(struct device_node *np,
 	char blmap_rev[30];
 	enum lge_panel_version p_ver = LGE_PANEL_V1;
 
-	struct lge_mdss_dsi_ctrl_pdata *lge_extra = &ctrl_pdata.lge_extra;
+	struct lge_mdss_dsi_ctrl_pdata *lge_extra = &ctrl_pdata->lge_extra;
 	struct mdss_panel_info *pinfo = &(ctrl_pdata->panel_data.panel_info);
 
 	pinfo->blmap_size = 512;
@@ -339,7 +339,7 @@ void lge_mdss_panel_parse_dt_blmaps_joan(struct device_node *np,
 		p_ver = panel_flag;
 
 	for (i = 0; i < LGE_BLMAPMAX; i++) {
-		snprintf(blmap_rev, sizeof(blmap_rev),lge_extra->lge_blmap_list[i]);
+		snprintf(blmap_rev, sizeof(blmap_rev),lge_extra->blmap_list[i]);
 
 		if(p_ver == LGE_PANEL_V1)
 			strcat(blmap_rev, "_v1");
@@ -379,26 +379,8 @@ error:
 	kfree(array);
 }
 
-
-void lge_mdss_panel_parse_dt_panel_ctrl_joan(struct device_node *np,
-				   struct mdss_dsi_ctrl_pdata *ctrl_pdata)
+// stub, used by phoenix, not used in joan
+int lge_ddic_ops_init(struct mdss_dsi_ctrl_pdata *ctrl_pdata)
 {
-}
-
-int lge_mdss_panel_create_panel_sysfs_joan(struct class *panel)
-{
-	int rc = 0;
-
-	return rc;
-}
-
-int lge_mdss_dsi_panel_init_sub(struct lge_mdss_dsi_ctrl_pdata *lge_extra)
-{
-	int rc = 0;
-
-	lge_extra->parse_dt_blmaps = lge_mdss_panel_parse_dt_blmaps_joan;
-	lge_extra->parse_dt_panel_ctrl = lge_mdss_panel_parse_dt_panel_ctrl_joan;
-	lge_extra->create_panel_sysfs = lge_mdss_panel_create_panel_sysfs_joan;
-
-	return rc;
+	return 0;
 }
