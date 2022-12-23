@@ -2852,7 +2852,7 @@ static DEVICE_ATTR(bw_mode_bitmap, S_IRUGO | S_IWUSR | S_IWGRP,
 void vsync_skip_set_fps(int fps)
 {
 	if (mdss_res == NULL) {
-		pr_warn("%s: mdss_res is NULL\n");
+		pr_warn("mdss_res is NULL\n");
 		return;
 	}
 
@@ -2872,7 +2872,7 @@ void vsync_skip_set_fps(int fps)
 		mdss_res->bucket = 0;
 		mdss_res->skip_ratio = fps;
 		mdss_res->skip_first = false;
-		pr_debug("Enable frame skip: Set to %lu fps.\n", fps);
+		pr_debug("Enable frame skip: Set to %d fps.\n", fps);
 	}
 }
 
