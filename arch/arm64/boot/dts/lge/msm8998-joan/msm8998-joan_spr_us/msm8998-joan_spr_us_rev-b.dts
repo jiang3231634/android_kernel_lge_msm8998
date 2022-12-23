@@ -75,7 +75,7 @@
     };
 };
 
-&pmi8998_charger {
+&smb1381_charger {
 	lge,smb-bat-en-gpio = <&pm8998_gpios 21 0>;
 };
 
