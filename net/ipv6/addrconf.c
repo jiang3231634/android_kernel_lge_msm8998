@@ -896,9 +896,6 @@ void inet6_ifa_finish_destroy(struct inet6_ifaddr *ifp)
 
 	kfree_rcu(ifp, rcu);
 }
-#ifdef CONFIG_LGP_DATA_TCPIP_MPTCP
-EXPORT_SYMBOL(inet6_ifa_finish_destroy);
-#endif
 
 static void
 ipv6_link_dev_addr(struct inet6_dev *idev, struct inet6_ifaddr *ifp)
@@ -2392,12 +2389,6 @@ static void manage_tempaddrs(struct inet6_dev *idev,
 	}
 }
 
-static bool is_addr_mode_generate_stable(struct inet6_dev *idev)
-{
-	return idev->addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY ||
-	       idev->addr_gen_mode == IN6_ADDR_GEN_MODE_RANDOM;
-}
-
 void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
 {
 	struct prefix_info *pinfo;
@@ -2514,7 +2505,8 @@ void addrconf_prefix_rcv(struct net_device *dev, u8 *opt, int len, bool sllao)
 				       in6_dev->token.s6_addr + 8, 8);
 				read_unlock_bh(&in6_dev->lock);
 				tokenized = true;
-			} else if (is_addr_mode_generate_stable(in6_dev) &&
+			} else if (in6_dev->addr_gen_mode ==
+				   IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
 				   !ipv6_generate_stable_address(&addr, 0,
 								 in6_dev)) {
 				addr_flags |= IFA_F_STABLE_PRIVACY;
@@ -3114,17 +3106,6 @@ retry:
 	return 0;
 }
 
-static void ipv6_gen_mode_random_init(struct inet6_dev *idev)
-{
-	struct ipv6_stable_secret *s = &idev->cnf.stable_secret;
-
-	if (s->initialized)
-		return;
-	s = &idev->cnf.stable_secret;
-	get_random_bytes(&s->secret, sizeof(s->secret));
-	s->initialized = true;
-}
-
 static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
 {
 	struct in6_addr addr;
@@ -3135,18 +3116,13 @@ static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
 
 	ipv6_addr_set(&addr, htonl(0xFE800000), 0, 0, 0);
 
-	switch (idev->addr_gen_mode) {
-	case IN6_ADDR_GEN_MODE_RANDOM:
-		ipv6_gen_mode_random_init(idev);
-		/* fallthrough */
-	case IN6_ADDR_GEN_MODE_STABLE_PRIVACY:
+	if (idev->addr_gen_mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY) {
 		if (!ipv6_generate_stable_address(&addr, 0, idev))
 			addrconf_add_linklocal(idev, &addr,
 					       IFA_F_STABLE_PRIVACY);
 		else if (prefix_route)
 			addrconf_prefix_route(&addr, 64, idev->dev, 0, 0);
-		break;
-	case IN6_ADDR_GEN_MODE_EUI64:
+	} else if (idev->addr_gen_mode == IN6_ADDR_GEN_MODE_EUI64) {
 		/* addrconf_add_linklocal also adds a prefix_route and we
 		 * only need to care about prefix routes if ipv6_generate_eui64
 		 * couldn't generate one.
@@ -3155,11 +3131,6 @@ static void addrconf_addr_gen(struct inet6_dev *idev, bool prefix_route)
 			addrconf_add_linklocal(idev, &addr, 0);
 		else if (prefix_route)
 			addrconf_prefix_route(&addr, 64, idev->dev, 0, 0);
-		break;
-	case IN6_ADDR_GEN_MODE_NONE:
-	default:
-		/* will not add any link local address */
-		break;
 	}
 }
 
@@ -3177,7 +3148,6 @@ static void addrconf_dev_config(struct net_device *dev)
 	    (dev->type != ARPHRD_IEEE1394) &&
 	    (dev->type != ARPHRD_TUNNEL6) &&
 	    (dev->type != ARPHRD_6LOWPAN) &&
-	    (dev->type != ARPHRD_NONE) &&
 	    (dev->type != ARPHRD_RAWIP) &&
 	    (dev->type != ARPHRD_INFINIBAND)) {
 		/* Alas, we support only Ethernet autoconfiguration. */
@@ -3187,11 +3157,6 @@ static void addrconf_dev_config(struct net_device *dev)
 	idev = addrconf_add_dev(dev);
 	if (IS_ERR(idev))
 		return;
-
-	/* this device type has no EUI support */
-	if (dev->type == ARPHRD_NONE &&
-	    idev->addr_gen_mode == IN6_ADDR_GEN_MODE_EUI64)
-		idev->addr_gen_mode = IN6_ADDR_GEN_MODE_RANDOM;
 
 	addrconf_addr_gen(idev, false);
 }
@@ -3612,28 +3577,11 @@ static void addrconf_dad_kick(struct inet6_ifaddr *ifp)
 	unsigned long rand_num;
 	struct inet6_dev *idev = ifp->idev;
 
-	if (ifp->flags & IFA_F_OPTIMISTIC) {
+	if (ifp->flags & IFA_F_OPTIMISTIC)
 		rand_num = 0;
-		printk("addrconf_dad_kick no wait rand_num 0\n");
-	}
-	else {
+	else
 		rand_num = prandom_u32() % (idev->cnf.rtr_solicit_delay ? : 1);
-        printk("addrconf_dad_kick wait rand_num\n");
-#ifdef CONFIG_IPV6_OPTIMISTIC_DAD
-#ifdef CONFIG_LGP_DATA_IMPROVE_QCT_EPDG_CONNECTION_TIME2
-        if(idev->dev != NULL && strlen(idev->dev->name)>5 && !strncmp(idev->dev->name,"rmnet",5)){
-            printk("addrconf_dad_kick it's rmnet!\n");
-            if(ifp && !dev_net(idev->dev)->ipv6.devconf_all->forwarding){
-                printk("addrconf_dad_kick forwarding disabled\n");
-                if(ipv6_addr_type(&(ifp->addr)) & IPV6_ADDR_LINKLOCAL){
-                    printk("addrconf_dad_kick rmnet linklocal case. set rand_num 0 !!\n");
-                    rand_num = 0;
-                }
-            }
-        }
-#endif
-#endif
-    }
+
 	ifp->dad_probes = idev->cnf.dad_transmits;
 	addrconf_mod_dad_work(ifp, rand_num);
 }
@@ -5074,8 +5022,7 @@ static int inet6_set_link_af(struct net_device *dev, const struct nlattr *nla)
 
 		if (mode != IN6_ADDR_GEN_MODE_EUI64 &&
 		    mode != IN6_ADDR_GEN_MODE_NONE &&
-		    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
-		    mode != IN6_ADDR_GEN_MODE_RANDOM)
+		    mode != IN6_ADDR_GEN_MODE_STABLE_PRIVACY)
 			return -EINVAL;
 
 		if (mode == IN6_ADDR_GEN_MODE_STABLE_PRIVACY &&
