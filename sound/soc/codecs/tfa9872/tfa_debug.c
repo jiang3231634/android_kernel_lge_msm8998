@@ -4,7 +4,7 @@
 #include "inc/config.h"
 
 /* support for error code translation into text */
-static char latest_errorstr[64];
+static char latest_errorstr[100];
 
 const char* tfa98xx_get_error_string(enum tfa98xx_error error)
 {
