@@ -1,4 +1,4 @@
-/* Copyright (c) 2008-2020, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2008-2021, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -2170,8 +2170,7 @@ static int memdesc_sg_virt(struct kgsl_memdesc *memdesc, unsigned long useraddr)
 	}
 
 	npages = get_user_pages(current, current->mm, useraddr,
-			sglen, write ? FOLL_WRITE : 0, pages, NULL);
-
+				sglen, write ? FOLL_WRITE : 0, pages, NULL);
 	up_read(&current->mm->mmap_sem);
 
 	ret = (npages < 0) ? (int)npages : 0;
@@ -2449,6 +2448,8 @@ long kgsl_ioctl_gpuobj_import(struct kgsl_device_private *dev_priv,
 	if (entry == NULL)
 		return -ENOMEM;
 
+	spin_lock_init(&entry->memdesc.lock);
+
 	param->flags &= KGSL_MEMFLAGS_GPUREADONLY
 			| KGSL_MEMTYPE_MASK
 			| KGSL_MEMALIGN_MASK
@@ -2721,6 +2722,8 @@ long kgsl_ioctl_map_user_mem(struct kgsl_device_private *dev_priv,
 
 	if (entry == NULL)
 		return -ENOMEM;
+
+	spin_lock_init(&entry->memdesc.lock);
 
 	/*
 	 * Convert from enum value to KGSL_MEM_ENTRY value, so that
@@ -3501,6 +3504,8 @@ long kgsl_ioctl_sparse_virt_alloc(struct kgsl_device_private *dev_priv,
 	entry = kgsl_mem_entry_create();
 	if (entry == NULL)
 		return -ENOMEM;
+
+	spin_lock_init(&entry->memdesc.lock);
 
 	entry->memdesc.flags = KGSL_MEMFLAGS_SPARSE_VIRT;
 	entry->memdesc.size = param->size;

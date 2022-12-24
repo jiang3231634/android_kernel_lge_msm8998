@@ -199,8 +199,9 @@ static void kgsl_iommu_remove_global(struct kgsl_mmu *mmu,
 static void kgsl_iommu_add_global(struct kgsl_mmu *mmu,
 		struct kgsl_memdesc *memdesc, const char *name)
 {
-	u32 bit, start = 0;
+	u32 bit;
 	u64 size = kgsl_memdesc_footprint(memdesc);
+	int start = 0;
 
 	if (memdesc->gpuaddr != 0)
 		return;
@@ -270,6 +271,7 @@ static void kgsl_setup_qdss_desc(struct kgsl_device *device)
 		return;
 	}
 
+	spin_lock_init(&gpu_qdss_desc.lock);
 	gpu_qdss_desc.flags = 0;
 	gpu_qdss_desc.priv = 0;
 	gpu_qdss_desc.physaddr = gpu_qdss_entry[0];
@@ -315,6 +317,7 @@ static void kgsl_setup_qtimer_desc(struct kgsl_device *device)
 		return;
 	}
 
+	spin_lock_init(&gpu_qtimer_desc.lock);
 	gpu_qtimer_desc.flags = 0;
 	gpu_qtimer_desc.priv = 0;
 	gpu_qtimer_desc.physaddr = gpu_qtimer_entry[0];
@@ -1499,6 +1502,7 @@ static int _setstate_alloc(struct kgsl_device *device,
 {
 	int ret;
 
+	spin_lock_init(&iommu->setstate.lock);
 	ret = kgsl_sharedmem_alloc_contig(device, &iommu->setstate, PAGE_SIZE);
 
 	if (!ret) {
